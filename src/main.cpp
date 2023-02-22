@@ -4,6 +4,16 @@
 #include "./odom/odom.hpp"
 #include "./utils/utils.hpp"
 
+void printOdom() {
+  while (1) {
+    printf("x: %f, y: %f, angle: %f\n",
+           chassis->getState().x.convert(centimeter),
+           chassis->getState().y.convert(centimeter),
+           chassis->getState().theta.convert(degree));
+    pros::delay(50);
+  }
+}
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -14,8 +24,17 @@ void initialize() {
   // pros::lcd::initialize();
   // pros::lcd::set_text(1, "Hello PROS User! ");
 
+  // tare sensors
+  inertial->reset();
+  odom_left->reset();
+  odom_right->reset();
+  odom_middle->reset();
+
   // start the odometry task
-  pros::Task odom_task(odom::run);
+  chassis->startOdomThread();
+
+  // print odom
+  pros::Task odom_task(printOdom);
 }
 
 /**
@@ -49,11 +68,19 @@ void competition_initialize() {}
  */
 void autonomous() {
   // start the pid task
-  movement::startPID();
+  // movement::startPID();
+
+  chassis->driveToPoint({1_ft, 0_ft});
+  chassis->waitUntilSettled();
+  pros::delay(1000);
+  chassis->driveToPoint({44_in, 0_ft});
+  chassis->waitUntilSettled();
+  pros::delay(1000);
+  chassis->driveToPoint({0_ft, 0_ft});
 
   // move forward 1 meter
-  movement::driveDistance(1_ft);
-  movement::waitUntilSettled();
+  // movement::driveDistance(1_ft);
+  // movement::waitUntilSettled();
 }
 
 /**

@@ -1,6 +1,7 @@
 // motors and all other shared stuff go here
 #include "./config.hpp"
 #include "main.h"
+#include "okapi/api/util/mathUtil.hpp"
 
 // inertial sensor
 std::shared_ptr<pros::IMU> inertial =
@@ -14,7 +15,7 @@ std::shared_ptr<ADIEncoder> odom_left =
     std::make_shared<ADIEncoder>(ODOM_LEFT_1, ODOM_LEFT_2, false);
 
 std::shared_ptr<ADIEncoder> odom_right =
-    std::make_shared<ADIEncoder>(ODOM_RIGHT_1, ODOM_RIGHT_2, false);
+    std::make_shared<ADIEncoder>(ODOM_RIGHT_1, ODOM_RIGHT_2, true);
 
 // create the motors
 std::shared_ptr<okapi::Motor> drive_top_left = std::make_shared<okapi::Motor>(
@@ -36,10 +37,15 @@ std::shared_ptr<okapi::Motor> drive_bottom_left =
                                    AbstractMotor::encoderUnits::degrees);
 
 // create a chassis
-std::shared_ptr<ChassisController> chassis =
+std::shared_ptr<OdomChassisController> chassis =
     ChassisControllerBuilder()
         .withMotors({drive_top_left, drive_bottom_left},
                     {drive_top_right, drive_bottom_right})
-        .withDimensions({AbstractMotor::gearset::green, (60.0 / 36.0)},
-                        {{4_in, 11.5_in}, imev5GreenTPR})
-        .build();
+        .withDimensions({AbstractMotor::gearset::green, (84.0 / 36.0)},
+                        {{4_in, 14.8_in}, imev5GreenTPR})
+        .withSensors(odom_left, odom_right, odom_middle)
+        .withOdometry({{2.75_in, 7_in}, quadEncoderTPR})
+        .withGains({0.000425, 0, 0.00001}, // distance
+                   {0.000425, 0, 0.0001},  // angle
+                   {0.0006, 0, 0.0001})    // turn
+        .buildOdometry();

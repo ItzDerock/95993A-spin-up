@@ -46,4 +46,4 @@ extern std::shared_ptr<okapi::Motor> drive_bottom_right;
 extern std::shared_ptr<okapi::Motor> drive_bottom_left;
 
 // create a chassis
-extern std::shared_ptr<ChassisController> chassis;
+extern std::shared_ptr<OdomChassisController> chassis;
