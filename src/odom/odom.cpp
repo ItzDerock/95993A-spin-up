@@ -5,7 +5,7 @@
 
 // constants
 const double BACK_ENC_OFFSET = 3.0;
-const double TICKS_PER_CM = 13.0;
+const double odom::TICKS_PER_CM = 13.0;
 
 // the global position of the robot in an unspecified unit
 odom::Point odom::globalPosition = {0, 0, 0};

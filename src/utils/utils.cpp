@@ -50,3 +50,9 @@ double utils::constrain(double value, double min, double max) {
     return value;
   }
 }
+
+// degrees to face target
+double utils::getAngleToTarget(double x1, double y1, double x2, double y2) {
+  double angle = atan2(y2 - y1, x2 - x1);
+  return angle;
+}

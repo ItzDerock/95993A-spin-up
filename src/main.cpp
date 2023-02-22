@@ -1,6 +1,8 @@
 #include "main.h"
 #include "./config/config.hpp"
+#include "./movement/movement.hpp"
 #include "./odom/odom.hpp"
+#include "./utils/utils.hpp"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -45,7 +47,14 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+  // start the pid task
+  movement::startPID();
+
+  // move forward 1 meter
+  movement::driveDistance(1_ft);
+  movement::waitUntilSettled();
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task

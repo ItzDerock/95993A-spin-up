@@ -4,11 +4,11 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+namespace utils {
+
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
-
-namespace utils {
 
 // takes a value and compresses it to fit in a range.
 double mapValue(double value, double istart, double istop, double ostart,
@@ -29,5 +29,8 @@ double compressAngle(double startAngle, double angle);
 
 // constrain
 double constrain(double value, double min, double max);
+
+// degrees to face target
+double getAngleToTarget(double x1, double y1, double x2, double y2);
 
 } // namespace utils

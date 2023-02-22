@@ -4,6 +4,9 @@
 
 namespace odom {
 
+// configuration
+extern const double TICKS_PER_CM;
+
 // point structure
 struct Point {
   double x, y, angle;
