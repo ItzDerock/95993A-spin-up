@@ -42,20 +42,27 @@
 #define HELD(x) if (master.get_digital(x))
 
 // inertial sensor
-extern std::shared_ptr<pros::IMU> inertial;
+extern IMU inertial;
 
 // odometry
-extern std::shared_ptr<ADIEncoder> odom_middle;
-extern std::shared_ptr<ADIEncoder> odom_left;
-extern std::shared_ptr<ADIEncoder> odom_right;
+extern ADIEncoder odom_middle;
+extern ADIEncoder odom_left;
+extern ADIEncoder odom_right;
 
 // all the motors
-extern std::shared_ptr<okapi::Motor> drive_top_left;
-extern std::shared_ptr<okapi::Motor> drive_top_right;
-extern std::shared_ptr<okapi::Motor> drive_bottom_right;
-extern std::shared_ptr<okapi::Motor> drive_bottom_left;
-extern std::shared_ptr<okapi::Motor> turret;
-extern std::shared_ptr<okapi::Motor> flywheel;
+extern std::shared_ptr<Motor> drive_top_left;
+extern std::shared_ptr<Motor> drive_top_right;
+extern std::shared_ptr<Motor> drive_bottom_right;
+extern std::shared_ptr<Motor> drive_bottom_left;
+extern std::shared_ptr<Motor> turret;
+extern std::shared_ptr<Motor> flywheel;
 
-// create a chassis
-extern std::shared_ptr<OdomChassisController> chassis;
+// LemLib stuff
+extern lemlib::Drivetrain_t drivetrain;
+extern lemlib::TrackingWheel left_tracking_wheel;
+extern lemlib::TrackingWheel right_tracking_wheel;
+extern lemlib::TrackingWheel middle_tracking_wheel;
+extern lemlib::OdomSensors_t sensors;
+extern lemlib::ChassisController_t lateralController;
+extern lemlib::ChassisController_t angularController;
+extern std::shared_ptr<lemlib::Chassis> chassis;

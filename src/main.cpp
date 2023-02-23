@@ -1,16 +1,12 @@
 #include "main.h"
 #include "./config/config.hpp"
-#include "./movement/movement.hpp"
-#include "./odom/odom.hpp"
 #include "./utils/utils.hpp"
 #include "pros/misc.h"
 
 void printOdom() {
   while (1) {
-    printf("x: %f, y: %f, angle: %f\n",
-           chassis->getState().x.convert(centimeter),
-           chassis->getState().y.convert(centimeter),
-           chassis->getState().theta.convert(degree));
+    auto pose = chassis->getPose();
+    printf("x: %f, y: %f, angle: %f\n", pose.x, pose.y, pose.theta);
     pros::delay(50);
   }
 }
@@ -22,20 +18,10 @@ void printOdom() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-  // pros::lcd::initialize();
-  // pros::lcd::set_text(1, "Hello PROS User! ");
-
-  // tare sensors
-  inertial->reset();
-  odom_left->reset();
-  odom_right->reset();
-  odom_middle->reset();
-
-  // start the odometry task
-  // chassis->startOdomThread();
-
-  // print odom
-  // pros::Task odom_task(printOdom);
+  // initalize odometry
+  chassis->calibrate();
+  chassis->setPose(0, 0, 0);
+  Task printOdomTask(printOdom);
 }
 
 /**
@@ -104,20 +90,21 @@ void opcontrol() {
     // Update drivetrain motors
     int left = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     int right = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
-    chassis->getModel()->tank(left, right);
+    drivetrain.leftMotors->move_velocity(left);
+    drivetrain.rightMotors->move_velocity(right);
 
     // turret
-    turret->moveVelocity(0);
-    HELD(pros::E_CONTROLLER_DIGITAL_L1) { turret->moveVelocity(10); }
+    turret->move_velocity(0);
+    HELD(pros::E_CONTROLLER_DIGITAL_L1) { turret->move_velocity(10); }
     else HELD(pros::E_CONTROLLER_DIGITAL_L2) {
-      turret->moveVelocity(-10);
+      turret->move_velocity(-10);
     }
 
     // flywheel
-    flywheel->moveVelocity(0);
-    HELD(pros::E_CONTROLLER_DIGITAL_R1) { flywheel->moveVelocity(600); }
+    flywheel->move_velocity(0);
+    HELD(pros::E_CONTROLLER_DIGITAL_R1) { flywheel->move_velocity(600); }
     else HELD(pros::E_CONTROLLER_DIGITAL_R2) {
-      flywheel->moveVelocity(-600);
+      flywheel->move_velocity(-600);
     }
 
     pros::delay(10);
