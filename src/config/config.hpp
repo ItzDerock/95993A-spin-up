@@ -11,6 +11,16 @@
 #define DRIVE_BOTTOM_RIGHT 4
 
 /**
+ * Turret
+ */
+#define TURRET_PORT 5
+
+/**
+ * Flywheel
+ */
+#define FLYWHEEL_PORT 6
+
+/**
  * Inertial sensor port
  */
 #define INERTIAL_PORT 10
@@ -44,6 +54,8 @@ extern std::shared_ptr<okapi::Motor> drive_top_left;
 extern std::shared_ptr<okapi::Motor> drive_top_right;
 extern std::shared_ptr<okapi::Motor> drive_bottom_right;
 extern std::shared_ptr<okapi::Motor> drive_bottom_left;
+extern std::shared_ptr<okapi::Motor> turret;
+extern std::shared_ptr<okapi::Motor> flywheel;
 
 // create a chassis
 extern std::shared_ptr<OdomChassisController> chassis;

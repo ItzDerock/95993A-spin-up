@@ -3,6 +3,7 @@
 #include "./movement/movement.hpp"
 #include "./odom/odom.hpp"
 #include "./utils/utils.hpp"
+#include "pros/misc.h"
 
 void printOdom() {
   while (1) {
@@ -104,6 +105,20 @@ void opcontrol() {
     int left = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     int right = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
     chassis->getModel()->tank(left, right);
+
+    // turret
+    turret->moveVelocity(0);
+    HELD(pros::E_CONTROLLER_DIGITAL_L1) { turret->moveVelocity(10); }
+    else HELD(pros::E_CONTROLLER_DIGITAL_L2) {
+      turret->moveVelocity(-10);
+    }
+
+    // flywheel
+    flywheel->moveVelocity(0);
+    HELD(pros::E_CONTROLLER_DIGITAL_R1) { flywheel->moveVelocity(600); }
+    else HELD(pros::E_CONTROLLER_DIGITAL_R2) {
+      flywheel->moveVelocity(-600);
+    }
 
     pros::delay(10);
   }

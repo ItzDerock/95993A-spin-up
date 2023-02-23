@@ -36,6 +36,16 @@ std::shared_ptr<okapi::Motor> drive_bottom_left =
                                    AbstractMotor::gearset::green,
                                    AbstractMotor::encoderUnits::degrees);
 
+// turret
+std::shared_ptr<okapi::Motor> turret = std::make_shared<okapi::Motor>(
+    TURRET_PORT, false, AbstractMotor::gearset::red,
+    AbstractMotor::encoderUnits::degrees);
+
+// flywheel
+std::shared_ptr<okapi::Motor> flywheel = std::make_shared<okapi::Motor>(
+    FLYWHEEL_PORT, false, AbstractMotor::gearset::blue,
+    AbstractMotor::encoderUnits::degrees);
+
 // create a chassis
 std::shared_ptr<OdomChassisController> chassis =
     ChassisControllerBuilder()
