@@ -20,7 +20,7 @@ void printOdom() {
 void initialize() {
   // initalize odometry
   chassis->calibrate();
-  chassis->setPose(0, 0, 0);
+  // chassis->setPose(0, 0, 0);
   Task printOdomTask(printOdom);
 }
 
@@ -54,8 +54,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-  // start the pid task
-  // movement::startPID();
+  chassis->moveTo(0, 10, 5000);
 
   // chassis->driveToPoint({1_ft, 0_ft});
   // chassis->waitUntilSettled();

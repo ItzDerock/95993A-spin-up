@@ -21,20 +21,20 @@ IMU inertial(INERTIAL_PORT);
 // odometry
 ADIEncoder odom_middle(ODOM_MIDDLE_1, ODOM_MIDDLE_2, true);
 ADIEncoder odom_left(ODOM_LEFT_1, ODOM_LEFT_2, false);
-ADIEncoder odom_right(ODOM_RIGHT_1, ODOM_RIGHT_2, false);
+ADIEncoder odom_right(ODOM_RIGHT_1, ODOM_RIGHT_2, true);
 
 // create the motors
 std::shared_ptr<Motor> drive_top_left =
-    std::make_shared<Motor>(DRIVE_TOP_LEFT, E_MOTOR_GEARSET_18, false);
+    std::make_shared<Motor>(DRIVE_TOP_LEFT, E_MOTOR_GEARSET_18, true);
 
 std::shared_ptr<Motor> drive_top_right =
-    std::make_shared<Motor>(DRIVE_TOP_RIGHT, E_MOTOR_GEARSET_18, true);
+    std::make_shared<Motor>(DRIVE_TOP_RIGHT, E_MOTOR_GEARSET_18, false);
 
 std::shared_ptr<Motor> drive_bottom_left =
-    std::make_shared<Motor>(DRIVE_BOTTOM_LEFT, E_MOTOR_GEARSET_18, false);
+    std::make_shared<Motor>(DRIVE_BOTTOM_LEFT, E_MOTOR_GEARSET_18, true);
 
 std::shared_ptr<Motor> drive_bottom_right =
-    std::make_shared<Motor>(DRIVE_BOTTOM_RIGHT, E_MOTOR_GEARSET_18, true);
+    std::make_shared<Motor>(DRIVE_BOTTOM_RIGHT, E_MOTOR_GEARSET_18, false);
 
 // make motor groups
 MotorGroup drive_left({*drive_top_left, *drive_bottom_left});
@@ -44,7 +44,7 @@ MotorGroup drive_right({*drive_top_right, *drive_bottom_right});
 lemlib::Drivetrain_t drivetrain{&drive_left, &drive_right, 14.75, 4, 476};
 
 // build the odometry setup
-lemlib::TrackingWheel left_tracking_wheel(&odom_left, 2.75, 7.5);
+lemlib::TrackingWheel left_tracking_wheel(&odom_left, 2.75, -7.5);
 lemlib::TrackingWheel right_tracking_wheel(&odom_right, 2.75, 7.5);
 lemlib::TrackingWheel middle_tracking_wheel(&odom_middle, 2.75, 3.6);
 lemlib::OdomSensors_t sensors{&left_tracking_wheel, &right_tracking_wheel,
@@ -52,8 +52,8 @@ lemlib::OdomSensors_t sensors{&left_tracking_wheel, &right_tracking_wheel,
 
 // create the pid system
 lemlib::ChassisController_t lateralController{
-    10,  // kP
-    30,  // kI
+    20,  // kP
+    30,  // kD
     1,   // smallErrorRange
     100, // smallErrorTimeout
     3,   // largeErrorRange
