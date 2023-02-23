@@ -32,10 +32,10 @@ void initialize() {
   odom_middle->reset();
 
   // start the odometry task
-  chassis->startOdomThread();
+  // chassis->startOdomThread();
 
   // print odom
-  pros::Task odom_task(printOdom);
+  // pros::Task odom_task(printOdom);
 }
 
 /**
@@ -71,13 +71,13 @@ void autonomous() {
   // start the pid task
   // movement::startPID();
 
-  chassis->driveToPoint({1_ft, 0_ft});
-  chassis->waitUntilSettled();
-  pros::delay(1000);
-  chassis->driveToPoint({44_in, 0_ft});
-  chassis->waitUntilSettled();
-  pros::delay(1000);
-  chassis->driveToPoint({0_ft, 0_ft});
+  // chassis->driveToPoint({1_ft, 0_ft});
+  // chassis->waitUntilSettled();
+  // pros::delay(1000);
+  // chassis->driveToPoint({44_in, 0_ft});
+  // chassis->waitUntilSettled();
+  // pros::delay(1000);
+  // chassis->driveToPoint({0_ft, 0_ft});
 
   // move forward 1 meter
   // movement::driveDistance(1_ft);

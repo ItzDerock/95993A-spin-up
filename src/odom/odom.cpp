@@ -1,26 +1,31 @@
+// Big thanks to PiLons 5225A
+// their technical paper about odometry really helped here
+// http://thepilons.ca/wp-content/uploads/2018/10/Tracking.pdf
+
 #include "odom.hpp"
 #include "../config/config.hpp"
 #include "../utils/utils.hpp"
 #include "okapi/api/units/QLength.hpp"
+#include <cmath>
 
 // constants
-const double BACK_ENC_OFFSET = 3.0;
+const double odom::BACK_ENC_OFFSET = 3.0;
 const double odom::TICKS_PER_CM = 13.0;
+const double odom::LEFT_ENC_OFFSET = 0.0;
+const double odom::RIGHT_ENC_OFFSET = 0.0;
 
-// the global position of the robot in an unspecified unit
-odom::Point odom::globalPosition = {0, 0, 0};
+// ticks per inch
+const double odom::ENCODER_TPR = 360.0;
+const double odom::WHEEL_DIAMETER = 2.75; // inches
+const double odom::TICKS_PER_INCH =
+    odom::ENCODER_TPR / (odom::WHEEL_DIAMETER * M_PI);
 
 // the processed position of the robot in cm
 odom::ProcessedPoint odom::position = {0_cm, 0_cm, 0};
 
-// other variables to help calculate the global position
-odom::Point odom::previousPosition = {0, 0, 0};
-odom::Point odom::globalDeltaPoint = {0, 0, 0};
-odom::Point odom::localDeltaPoint = {0, 0, 0};
-
 // structure to keep sensor values
 struct EncoderData {
-  double left, right, back;
+  double left, right, back, theta;
 };
 
 // keep track of the last sensor values
@@ -29,126 +34,95 @@ EncoderData lastEncoderData = {0, 0, 0};
 EncoderData deltaEncoderData = {0, 0, 0};
 
 // keep track of inertial sensor values
-struct {
-  double current, previous, delta;
-} inertialSensorData = {0, 0, 0};
+// struct {
+//   double previous, delta;
+// } inertialSensorData = {0, 0, 0};
+
+// utility functions
+QLength odom::ticksToLength(double ticks) {
+  return ticks / odom::TICKS_PER_INCH * 1_in;
+}
 
 // Odometry Functions
-void odom::updateSensors() {
-  // get the left, right, and back encoder data
-  currentEncoderData.left = odom_left->get();
-  currentEncoderData.right = -odom_right->get();
-  currentEncoderData.back = -odom_middle->get();
+void odom::update() {
+  // Get the current encoder data
+  double currentLeft = odom_left->get();
+  double currentRight = odom_right->get();
+  double currentMiddle = odom_middle->get();
 
-  // printf("left: %f, right: %f, back: %f\n", currentEncoderData.left,
-  //        currentEncoderData.right, currentEncoderData.back);
+  // Calculate the change
+  double deltaLeft = currentLeft - lastEncoderData.left;
+  double deltaRight = currentRight - lastEncoderData.right;
+  double deltaMiddle = currentMiddle - lastEncoderData.back;
 
-  // find the delta encoder values
-  deltaEncoderData.left = currentEncoderData.left - lastEncoderData.left;
-  deltaEncoderData.right = currentEncoderData.right - lastEncoderData.right;
-  deltaEncoderData.back = currentEncoderData.back - lastEncoderData.back;
+  // Update the last encoder data
+  lastEncoderData.left = currentLeft;
+  lastEncoderData.right = currentRight;
+  lastEncoderData.back = currentMiddle;
 
-  // printf("left: %f, right: %f, back: %f\n", deltaEncoderData.left,
-  //        deltaEncoderData.right, deltaEncoderData.back);
+  // Turn into inches
+  deltaLeft = ticksToLength(deltaLeft).convert(inch);
+  deltaRight = ticksToLength(deltaRight).convert(inch);
+  deltaMiddle = ticksToLength(deltaMiddle).convert(inch);
 
-  // update the last encoder values
-  lastEncoderData.left = currentEncoderData.left;
-  lastEncoderData.right = currentEncoderData.right;
-  lastEncoderData.back = currentEncoderData.back;
+  // Calculate the total change in left and right encoder vales
+  double totalDeltaLeft = ticksToLength(currentLeft).convert(inch);
+  double totalDeltaRight = ticksToLength(currentRight).convert(inch);
 
-  // get the inertial sensor value
-  inertialSensorData.current = utils::getRadians(inertial->get_rotation());
+  // Calculate new absolute orientation
+  double currentAngle =
+      (totalDeltaLeft - totalDeltaRight) / (LEFT_ENC_OFFSET + RIGHT_ENC_OFFSET);
 
-  // find the delta inertial sensor value
-  inertialSensorData.delta =
-      inertialSensorData.current - inertialSensorData.previous;
+  // Calculate the delta angle
+  double deltaAngle =
+      currentAngle - lastEncoderData.theta; // current - previous
 
-  // update the previous inertial sensor value
-  inertialSensorData.previous = inertialSensorData.current;
+  // Update the previous angle
+  // lastEncoderData.theta = currentAngle;
+
+  // if no change in angle, moved straight
+  if (deltaAngle == 0) { // account for slight inaccuracies
+    // straight, so just add the change in left and right
+    odom::position.y += deltaLeft * 1_in;
+    odom::position.x += deltaMiddle * 1_in;
+    return;
+  }
+
+  // calculate local offset
+  double localOffsetX =
+      2 * sin(currentAngle / 2) * (deltaMiddle + BACK_ENC_OFFSET);
+  double localOffsetY =
+      2 * sin(currentAngle / 2) * (deltaRight + RIGHT_ENC_OFFSET);
+
+  // calculate average orientation
+  double thetaM = lastEncoderData.theta + deltaAngle / 2;
+
+  // calculate global offset
+  // this can be done by converting cartesian to polar, change the angle, and
+  // then convert back.
+  double globalOffsetX =
+      localOffsetX * cos(thetaM) - localOffsetY * sin(thetaM);
+  double globalOffsetY =
+      localOffsetX * sin(thetaM) + localOffsetY * cos(thetaM);
+
+  // update the position
+  odom::position.x += globalOffsetX * 1_in;
+  odom::position.y += globalOffsetY * 1_in;
+
+  // update the angle
+  odom::position.angle += deltaAngle;
+
+  // update the last encoder data
+  lastEncoderData.theta = currentAngle;
 }
 
-// update the global position
-void odom::updatePosition() {
-  // polar coordinates
-  localDeltaPoint.x =
-      (inertialSensorData.delta + (deltaEncoderData.back / BACK_ENC_OFFSET)) *
-      BACK_ENC_OFFSET;
-
-  localDeltaPoint.y = (deltaEncoderData.left + deltaEncoderData.right) / 2.0;
-
-  // to cartesian coordinates
-  globalDeltaPoint.x =
-      (localDeltaPoint.y *
-       sin(previousPosition.angle + globalDeltaPoint.angle / 2)) +
-      (localDeltaPoint.x *
-       cos(previousPosition.angle + globalDeltaPoint.angle / 2));
-
-  globalDeltaPoint.y =
-      (localDeltaPoint.y *
-       cos(previousPosition.angle + globalDeltaPoint.angle / 2)) -
-      (localDeltaPoint.x *
-       sin(previousPosition.angle + globalDeltaPoint.angle / 2));
-
-  // update the global position
-  globalPosition.x = globalDeltaPoint.x + previousPosition.x;
-  globalPosition.y = globalDeltaPoint.y + previousPosition.y;
-  globalPosition.angle = inertialSensorData.current;
-
-  // update the previous position
-  previousPosition = globalPosition;
-}
-
-// reset the global position
-void odom::resetPosition() {
-  // reset the global position
-  globalPosition.x = 0;
-  globalPosition.y = 0;
-  globalPosition.angle = 0;
-
-  // reset the previous position
-  previousPosition = globalPosition;
-
-  // reset the inertial sensor
-  inertial->reset();
-
-  // reset the encoders
-  drive_top_left->tarePosition();
-  drive_top_right->tarePosition();
-  drive_bottom_left->tarePosition();
-  drive_bottom_right->tarePosition();
-  odom_middle->reset();
-}
-
-// update the processed global position
-void odom::updateProcessedPosition() {
-  // update the processed global position
-  // convert the global position to cm and make it a QLength
-  position.x = globalPosition.x / TICKS_PER_CM * 1_cm;
-  position.y = globalPosition.y / TICKS_PER_CM * 1_cm;
-  position.angle = globalPosition.angle;
-}
-
-// odometry task
+// task
 void odom::run() {
   while (true) {
-    // wait for inertial sensor to calibrate
-    while (inertial->is_calibrating())
-      pros::delay(20);
-
-    // update the sensors
-    updateSensors();
-
-    // update the global position
-    updatePosition();
-
-    // update the processed global position
-    updateProcessedPosition();
-
-    // print the global position
-    printf("x: %f, y: %f, angle: %f\n", position.x.convert(centimeter),
-           position.y.convert(centimeter), position.angle);
-
-    // wait for the next iteration
+    odom::update();
+    // print
+    printf("x: %f, y: %f, theta: %f\n", odom::position.x.convert(inch),
+           odom::position.y.convert(inch), odom::position.angle);
     pros::delay(10);
   }
 }

@@ -6,6 +6,13 @@ namespace odom {
 
 // configuration
 extern const double TICKS_PER_CM;
+extern const double LEFT_ENC_OFFSET;  // left to center
+extern const double RIGHT_ENC_OFFSET; // right to center
+extern const double BACK_ENC_OFFSET;  // back to center
+
+extern const double ENCODER_TPR;    // ticks per revolution
+extern const double WHEEL_DIAMETER; // diameter of the tracking wheels
+extern const double TICKS_PER_INCH; // ticks per inch (calculated from above)
 
 // point structure
 struct Point {
@@ -30,10 +37,10 @@ extern odom::Point globalDeltaPoint;
 extern odom::Point localDeltaPoint;
 
 // odometry functions
-void updateSensors();
-void updatePosition();
-void updateProcessedPosition();
-void resetPosition();
+void update();
 void run();
+
+// utility functions
+QLength ticksToLength(double ticks);
 
 } // namespace odom
