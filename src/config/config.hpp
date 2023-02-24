@@ -18,7 +18,8 @@
 /**
  * Flywheel
  */
-#define FLYWHEEL_PORT 6
+#define FLYWHEEL_LEFT 6
+#define FLYWHEEL_RIGHT 7
 
 /**
  * Inertial sensor port
@@ -41,6 +42,9 @@
 #define BUTTON(x) if (master.get_digital_new_press(x))
 #define HELD(x) if (master.get_digital(x))
 
+// controller
+extern pros::Controller master;
+
 // inertial sensor
 extern IMU inertial;
 
@@ -55,7 +59,11 @@ extern std::shared_ptr<Motor> drive_top_right;
 extern std::shared_ptr<Motor> drive_bottom_right;
 extern std::shared_ptr<Motor> drive_bottom_left;
 extern std::shared_ptr<Motor> turret;
-extern std::shared_ptr<Motor> flywheel;
+
+// flywheel
+extern std::shared_ptr<Motor> flywheel_left;
+extern std::shared_ptr<Motor> flywheel_right;
+extern MotorGroup flywheel;
 
 // LemLib stuff
 extern lemlib::Drivetrain_t drivetrain;

@@ -1,7 +1,9 @@
 #include "main.h"
 #include "./config/config.hpp"
+#include "./tasks/tasks.hpp"
 #include "./utils/utils.hpp"
 #include "pros/misc.h"
+#include "screen/screen.hpp"
 
 void printOdom() {
   while (1) {
@@ -22,6 +24,10 @@ void initialize() {
   chassis->calibrate();
   // chassis->setPose(0, 0, 0);
   Task printOdomTask(printOdom);
+  Task flywheelTempTask(tasks::flywheelTemperatureTask);
+
+  // display initialization
+  display::initializeField();
 }
 
 /**
@@ -53,21 +59,7 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {
-  chassis->moveTo(0, 10, 5000);
-
-  // chassis->driveToPoint({1_ft, 0_ft});
-  // chassis->waitUntilSettled();
-  // pros::delay(1000);
-  // chassis->driveToPoint({44_in, 0_ft});
-  // chassis->waitUntilSettled();
-  // pros::delay(1000);
-  // chassis->driveToPoint({0_ft, 0_ft});
-
-  // move forward 1 meter
-  // movement::driveDistance(1_ft);
-  // movement::waitUntilSettled();
-}
+void autonomous() { chassis->moveTo(0, 10, 5000); }
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -83,8 +75,6 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-  pros::Controller master(pros::E_CONTROLLER_MASTER);
-
   while (true) {
     // Update drivetrain motors
     int left = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
@@ -94,16 +84,18 @@ void opcontrol() {
 
     // turret
     turret->move_velocity(0);
-    HELD(pros::E_CONTROLLER_DIGITAL_L1) { turret->move_velocity(10); }
+    HELD(pros::E_CONTROLLER_DIGITAL_L1) { turret->move_velocity(15); }
     else HELD(pros::E_CONTROLLER_DIGITAL_L2) {
-      turret->move_velocity(-10);
+      turret->move_velocity(-15);
     }
 
     // flywheel
-    flywheel->move_velocity(0);
-    HELD(pros::E_CONTROLLER_DIGITAL_R1) { flywheel->move_velocity(600); }
+    HELD(pros::E_CONTROLLER_DIGITAL_R1) { flywheel.move_velocity(600); }
     else HELD(pros::E_CONTROLLER_DIGITAL_R2) {
-      flywheel->move_velocity(-600);
+      flywheel.move_velocity(-600);
+    }
+    else {
+      flywheel.move_velocity(0);
     }
 
     pros::delay(10);

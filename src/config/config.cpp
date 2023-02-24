@@ -4,6 +4,10 @@
 #include "main.h"
 #include "okapi/api/util/mathUtil.hpp"
 #include "pros/motors.h"
+#include <memory>
+
+// controller
+pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 // turret
 std::shared_ptr<pros::Motor> turret =
@@ -11,10 +15,13 @@ std::shared_ptr<pros::Motor> turret =
                                   pros::E_MOTOR_ENCODER_DEGREES);
 
 // flywheel
-std::shared_ptr<pros::Motor> flywheel =
-    std::make_shared<pros::Motor>(FLYWHEEL_PORT, pros::E_MOTOR_GEARSET_06,
-                                  false, pros::E_MOTOR_ENCODER_DEGREES);
-
+std::shared_ptr<Motor> flywheel_left =
+    std::make_shared<Motor>(FLYWHEEL_LEFT, pros::E_MOTOR_GEARSET_18, false,
+                            pros::E_MOTOR_ENCODER_DEGREES);
+std::shared_ptr<Motor> flywheel_right =
+    std::make_shared<Motor>(FLYWHEEL_RIGHT, pros::E_MOTOR_GEARSET_18, true,
+                            pros::E_MOTOR_ENCODER_DEGREES);
+MotorGroup flywheel({*flywheel_left, *flywheel_right});
 // inertial sensor
 IMU inertial(INERTIAL_PORT);
 
