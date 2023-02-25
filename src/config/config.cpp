@@ -32,9 +32,10 @@ std::shared_ptr<pros::Motor> intake =
 IMU inertial(INERTIAL_PORT);
 
 // odometry
-ADIEncoder odom_middle(ODOM_MIDDLE_1, ODOM_MIDDLE_2, true);
-ADIEncoder odom_left(ODOM_LEFT_1, ODOM_LEFT_2, false);
-ADIEncoder odom_right(ODOM_RIGHT_1, ODOM_RIGHT_2, true);
+ADIEncoder odom_middle({THREEWIRE_EXPANDER, ODOM_MIDDLE_1, ODOM_MIDDLE_2},
+                       true);
+ADIEncoder odom_left({THREEWIRE_EXPANDER, ODOM_LEFT_1, ODOM_LEFT_2}, false);
+ADIEncoder odom_right({THREEWIRE_EXPANDER, ODOM_RIGHT_1, ODOM_RIGHT_2}, true);
 
 // create the motors
 std::shared_ptr<Motor> drive_top_left =
