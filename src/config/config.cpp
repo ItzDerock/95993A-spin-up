@@ -22,6 +22,12 @@ std::shared_ptr<Motor> flywheel_right =
     std::make_shared<Motor>(FLYWHEEL_RIGHT, pros::E_MOTOR_GEARSET_18, true,
                             pros::E_MOTOR_ENCODER_DEGREES);
 MotorGroup flywheel({*flywheel_left, *flywheel_right});
+
+// intake
+std::shared_ptr<pros::Motor> intake =
+    std::make_shared<pros::Motor>(INTAKE_PORT, pros::E_MOTOR_GEARSET_36, false,
+                                  pros::E_MOTOR_ENCODER_DEGREES);
+
 // inertial sensor
 IMU inertial(INERTIAL_PORT);
 

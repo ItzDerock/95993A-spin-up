@@ -22,6 +22,11 @@
 #define FLYWHEEL_RIGHT 7
 
 /**
+ * Intake
+ */
+#define INTAKE_PORT 8
+
+/**
  * Inertial sensor port
  */
 #define INERTIAL_PORT 10
@@ -59,6 +64,7 @@ extern std::shared_ptr<Motor> drive_top_right;
 extern std::shared_ptr<Motor> drive_bottom_right;
 extern std::shared_ptr<Motor> drive_bottom_left;
 extern std::shared_ptr<Motor> turret;
+extern std::shared_ptr<Motor> intake;
 
 // flywheel
 extern std::shared_ptr<Motor> flywheel_left;

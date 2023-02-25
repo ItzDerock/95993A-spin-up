@@ -98,6 +98,15 @@ void opcontrol() {
       flywheel.move_velocity(0);
     }
 
+    // intake toggle
+    BUTTON(pros::E_CONTROLLER_DIGITAL_X) {
+      if (intake->get_target_velocity() == 0) {
+        intake->move_velocity(200);
+      } else {
+        intake->move_velocity(0);
+      }
+    }
+
     pros::delay(10);
   }
 }
