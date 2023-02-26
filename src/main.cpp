@@ -20,12 +20,14 @@ void printOdom() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+  // init auton selector
+  display::initializeAutonSelect();
+
   // initalize odometry
   chassis->calibrate();
-  // chassis->setPose(0, 0, 0);
-  Task printOdomTask(printOdom);
-  Task flywheelTempTask(tasks::flywheelTemperatureTask);
 
+  // Task printOdomTask(printOdom);
+  Task flywheelTempTask(tasks::flywheelTemperatureTask);
   // display initialization
   display::initializeField();
 }
