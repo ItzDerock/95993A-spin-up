@@ -1,6 +1,7 @@
 #pragma once
 
 #include "main.h"
+#include "pros/adi.hpp"
 
 /**
  * Drive train ports
@@ -14,6 +15,7 @@
  * Turret
  */
 #define TURRET_PORT 5
+#define TURRET_ROT_SENSOR 11
 
 /**
  * Flywheel
@@ -43,13 +45,19 @@
 #define ODOM_RIGHT_2 'F'
 
 /**
+ * Indexer
+ */
+#define INDEXER_PORT 'A'
+
+/**
  * utility macros
  */
-#define BUTTON(x) if (master.get_digital_new_press(x))
-#define HELD(x) if (master.get_digital(x))
+// #define BUTTON(x, controller) if (controller.get_digital_new_press(x))
+// #define HELD(x) if (master.get_digital(x))
 
 // controller
 extern pros::Controller master;
+extern pros::Controller partner;
 
 // inertial sensor
 extern IMU inertial;
@@ -58,6 +66,12 @@ extern IMU inertial;
 extern ADIEncoder odom_middle;
 extern ADIEncoder odom_left;
 extern ADIEncoder odom_right;
+
+// indexer
+extern std::shared_ptr<ADIDigitalOut> indexer;
+
+// rotational sensor
+extern std::shared_ptr<Rotation> turret_rot;
 
 // all the motors
 extern std::shared_ptr<Motor> drive_top_left;

@@ -2,6 +2,8 @@
 
 namespace tasks {
 
-void flywheelTemperatureTask();
+// turret.cpp - Turret aiming task
+extern double turretTargetAngle;
+void aimTurret();
 
-}
+} // namespace tasks

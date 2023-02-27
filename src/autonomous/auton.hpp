@@ -7,6 +7,7 @@ extern AutonMode autonMode;
 
 // set auton mode
 void setAutonMode(AutonMode mode);
+void resetPosition();
 
 // run the selected auton
 void run();

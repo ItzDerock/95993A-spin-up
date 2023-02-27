@@ -26,10 +26,13 @@ void initialize() {
   // initalize odometry
   chassis->calibrate();
 
+  // start turret aiming
+  Task aimTurretTask(tasks::aimTurret);
+
   // Task printOdomTask(printOdom);
-  Task flywheelTempTask(tasks::flywheelTemperatureTask);
   // display initialization
   display::initializeField();
+  display::initializeInformation();
 }
 
 /**
@@ -81,34 +84,16 @@ void opcontrol() {
     // Update drivetrain motors
     int left = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     int right = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
+
+    // map to the right speed
+    left = utils::mapValue(0, -127, 127, -200, 200);
+    right = utils::mapValue(0, -127, 127, -200, 200);
+
+    // set the motors
     drivetrain.leftMotors->move_velocity(left);
     drivetrain.rightMotors->move_velocity(right);
 
-    // turret
-    turret->move_velocity(0);
-    HELD(pros::E_CONTROLLER_DIGITAL_L1) { turret->move_velocity(15); }
-    else HELD(pros::E_CONTROLLER_DIGITAL_L2) {
-      turret->move_velocity(-15);
-    }
-
-    // flywheel
-    HELD(pros::E_CONTROLLER_DIGITAL_R1) { flywheel.move_velocity(600); }
-    else HELD(pros::E_CONTROLLER_DIGITAL_R2) {
-      flywheel.move_velocity(-600);
-    }
-    else {
-      flywheel.move_velocity(0);
-    }
-
-    // intake toggle
-    BUTTON(pros::E_CONTROLLER_DIGITAL_X) {
-      if (intake->get_target_velocity() == 0) {
-        intake->move_velocity(200);
-      } else {
-        intake->move_velocity(0);
-      }
-    }
-
+    // wait
     pros::delay(10);
   }
 }

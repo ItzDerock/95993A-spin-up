@@ -3,16 +3,22 @@
 #include "lemlib/chassis/chassis.hpp"
 #include "main.h"
 #include "okapi/api/util/mathUtil.hpp"
+#include "pros/adi.hpp"
 #include "pros/motors.h"
 #include <memory>
 
 // controller
 pros::Controller master(pros::E_CONTROLLER_MASTER);
+pros::Controller partner(pros::E_CONTROLLER_PARTNER);
 
 // turret
 std::shared_ptr<pros::Motor> turret =
     std::make_shared<pros::Motor>(TURRET_PORT, pros::E_MOTOR_GEARSET_36, false,
                                   pros::E_MOTOR_ENCODER_DEGREES);
+
+// rotational sensor
+std::shared_ptr<Rotation> turret_rot =
+    std::make_shared<Rotation>(TURRET_ROT_SENSOR);
 
 // flywheel
 std::shared_ptr<Motor> flywheel_left =
@@ -22,6 +28,10 @@ std::shared_ptr<Motor> flywheel_right =
     std::make_shared<Motor>(FLYWHEEL_RIGHT, pros::E_MOTOR_GEARSET_18, true,
                             pros::E_MOTOR_ENCODER_DEGREES);
 MotorGroup flywheel({*flywheel_left, *flywheel_right});
+
+// indexer
+std::shared_ptr<pros::ADIDigitalOut> indexer =
+    std::make_shared<pros::ADIDigitalOut>(INDEXER_PORT);
 
 // intake
 std::shared_ptr<pros::Motor> intake =
