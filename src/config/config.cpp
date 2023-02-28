@@ -33,6 +33,10 @@ MotorGroup flywheel({*flywheel_left, *flywheel_right});
 std::shared_ptr<pros::ADIDigitalOut> indexer =
     std::make_shared<pros::ADIDigitalOut>(INDEXER_PORT);
 
+// endgame
+std::shared_ptr<pros::ADIDigitalOut> endgame =
+    std::make_shared<pros::ADIDigitalOut>(ENDGAME_PORT);
+
 // intake
 std::shared_ptr<pros::Motor> intake =
     std::make_shared<pros::Motor>(INTAKE_PORT, pros::E_MOTOR_GEARSET_36, false,

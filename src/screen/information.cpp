@@ -34,10 +34,14 @@ void display::informationTask() {
     // turret target angle
     auto target = tasks::turretTargetAngle;
 
+    // target speed
+    auto speed = tasks::flywheelTargetSpeed;
+
     // build a big string
     std::string text = "Match Mode: " + compStatus + "\n" +
                        "Battery: " + std::to_string((int)battery) + "%\n" +
-                       "Turret Target: " + std::to_string(target);
+                       "Turret Target: " + std::to_string(target) + "\n" +
+                       "Flywheel Target: " + std::to_string(speed) + "\n";
 
     // put the information in the text area
     lv_label_set_text(informationTextLabel, text.c_str());

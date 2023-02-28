@@ -1,12 +1,15 @@
 #include "../config/config.hpp"
 #include "../pid/pid.hpp"
+#include "../structs/point.hpp"
 #include "../utils/utils.hpp"
 #include "main.h"
 #include "tasks.hpp"
 
 // constants
-const double targetX = 53;
-const double targetY = 53;
+XYPoint tasks::autoAimTarget = {53, 53};
+
+// configuration
+bool tasks::autoAimEnabled = true;
 
 // target
 double tasks::turretTargetAngle = 0;
@@ -20,7 +23,8 @@ void tasks::aimTurret() {
     auto state = chassis->getPose();
 
     // calculate angle to target
-    tasks::turretTargetAngle = atan2(targetY - state.y, targetX - state.x);
+    tasks::turretTargetAngle = atan2(tasks::autoAimTarget.y - state.y,
+                                     tasks::autoAimTarget.x - state.x);
 
     // turn into degrees
     tasks::turretTargetAngle = lemlib::radToDeg(tasks::turretTargetAngle);

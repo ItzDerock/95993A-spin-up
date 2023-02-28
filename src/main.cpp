@@ -93,6 +93,58 @@ void opcontrol() {
     drivetrain.leftMotors->move_velocity(left);
     drivetrain.rightMotors->move_velocity(right);
 
+    /*
+     * SHAAN's CONTROLS (controller2)
+     */
+
+    // turret/flywheel requires autoaim off
+    if (!tasks::autoAimEnabled) {
+      // increase/decrease speed
+      if (partner.get_digital_new_press(E_CONTROLLER_DIGITAL_UP)) {
+        tasks::flywheelTargetSpeed += 10;
+      } else if (partner.get_digital_new_press(E_CONTROLLER_DIGITAL_DOWN)) {
+        tasks::flywheelTargetSpeed -= 10;
+      }
+
+      // speed cap of 600
+      tasks::flywheelTargetSpeed = std::min(tasks::flywheelTargetSpeed, 600.0);
+      // minimum of 0
+      tasks::flywheelTargetSpeed = std::max(tasks::flywheelTargetSpeed, 0.0);
+
+      // enable/disable
+      if (partner.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {
+        tasks::flywheelEnabled = !tasks::flywheelEnabled;
+      }
+
+      // index
+      if (partner.get_digital_new_press(E_CONTROLLER_DIGITAL_L2)) {
+        tasks::indexOne();
+      }
+
+      // turn turret
+      if (partner.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+        turret->move_velocity(15);
+      } else if (partner.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+        turret->move_velocity(-15);
+      } else {
+        turret->move_velocity(0);
+      }
+    }
+
+    // toggle autoaim
+    if (partner.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+      tasks::autoAimEnabled = !tasks::autoAimEnabled;
+    }
+
+    /**
+     * DUAL CONTROLS
+     */
+    // endgame should fire when both users have A pressed
+    if (master.get_digital(E_CONTROLLER_DIGITAL_A) &&
+        partner.get_digital(E_CONTROLLER_DIGITAL_A)) {
+      tasks::fireEndgame();
+    }
+
     // wait
     pros::delay(10);
   }

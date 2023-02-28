@@ -50,6 +50,11 @@
 #define INDEXER_PORT 'A'
 
 /**
+ * Endgame
+ */
+#define ENDGAME_PORT 'B'
+
+/**
  * utility macros
  */
 // #define BUTTON(x, controller) if (controller.get_digital_new_press(x))
@@ -69,6 +74,9 @@ extern ADIEncoder odom_right;
 
 // indexer
 extern std::shared_ptr<ADIDigitalOut> indexer;
+
+// endgame
+extern std::shared_ptr<ADIDigitalOut> endgame;
 
 // rotational sensor
 extern std::shared_ptr<Rotation> turret_rot;
