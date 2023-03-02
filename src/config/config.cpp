@@ -31,7 +31,8 @@ MotorGroup flywheel({*flywheel_left, *flywheel_right});
 
 // indexer
 std::shared_ptr<pros::ADIDigitalOut> indexer =
-    std::make_shared<pros::ADIDigitalOut>(INDEXER_PORT);
+    std::make_shared<pros::ADIDigitalOut>(
+        std::make_pair(THREEWIRE_EXPANDER, INDEXER_PORT));
 
 // endgame
 std::shared_ptr<pros::ADIDigitalOut> endgame =

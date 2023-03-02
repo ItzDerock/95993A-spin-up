@@ -93,6 +93,18 @@ void opcontrol() {
     drivetrain.leftMotors->move_velocity(left);
     drivetrain.rightMotors->move_velocity(right);
 
+    /**
+     * DEROCK's CONTROLS
+     */
+    // toggle intake
+    if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+      if (intake->get_target_velocity() == 0) {
+        intake->move_velocity(200);
+      } else {
+        intake->move_velocity(0);
+      }
+    }
+
     /*
      * SHAAN's CONTROLS (controller2)
      */

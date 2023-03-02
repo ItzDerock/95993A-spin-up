@@ -36,7 +36,7 @@
 /**
  * Odometry
  */
-#define THREEWIRE_EXPANDER 20
+#define THREEWIRE_EXPANDER 9
 #define ODOM_MIDDLE_1 'A'
 #define ODOM_MIDDLE_2 'B'
 #define ODOM_LEFT_1 'C'
@@ -47,7 +47,7 @@
 /**
  * Indexer
  */
-#define INDEXER_PORT 'A'
+#define INDEXER_PORT 'H'
 
 /**
  * Endgame
