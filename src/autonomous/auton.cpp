@@ -1,5 +1,6 @@
 #include "auton.hpp"
 #include "../config/config.hpp"
+#include "../odom/odom.hpp"
 
 // selected auton
 auton::AutonMode auton::autonMode = auton::NONE;
@@ -8,4 +9,4 @@ auton::AutonMode auton::autonMode = auton::NONE;
 void auton::setAutonMode(AutonMode mode) { autonMode = mode; }
 
 // position
-void auton::resetPosition() { chassis->setPose({0, 0, 0}); }
+void auton::resetPosition() { odom::reset(); }

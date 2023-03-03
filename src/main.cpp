@@ -2,16 +2,17 @@
 #include "./config/config.hpp"
 #include "./tasks/tasks.hpp"
 #include "./utils/utils.hpp"
+#include "odom/odom.hpp"
 #include "pros/misc.h"
 #include "screen/screen.hpp"
 
-void printOdom() {
-  while (1) {
-    auto pose = chassis->getPose();
-    printf("x: %f, y: %f, angle: %f\n", pose.x, pose.y, pose.theta);
-    pros::delay(50);
-  }
-}
+// void printOdom() {
+//   while (1) {
+//     auto pose = chassis->getPose();
+//     printf("x: %f, y: %f, angle: %f\n", pose.x, pose.y, pose.theta);
+//     pros::delay(50);
+//   }
+// }
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -24,10 +25,15 @@ void initialize() {
   display::initializeAutonSelect();
 
   // initalize odometry
-  chassis->calibrate();
+  // chassis->calibrate();
+  odom::init();
 
   // start turret aiming
   Task aimTurretTask(tasks::aimTurret);
+  Task flywheelSpeedTask(tasks::flywheelSpeed);
+
+  // set indexer to low position
+  indexer->set_value(1);
 
   // Task printOdomTask(printOdom);
   // display initialization
@@ -81,13 +87,31 @@ void autonomous() { chassis->moveTo(0, 10, 5000); }
  */
 void opcontrol() {
   while (true) {
+    // if (sensors.horizontal1 != nullptr) {
+    //   printf("horizontal1: %f\n",
+    //   sensors.horizontal1->getDistanceTraveled());
+    // }
+    //
+    // if (sensors.horizontal2 != nullptr) {
+    //   printf("horizontal2: %f\n",
+    //   sensors.horizontal2->getDistanceTraveled());
+    // }
+    //
+    // if (sensors.vertical1 != nullptr) {
+    //   printf("vertical: %f\n", sensors.vertical1->getDistanceTraveled());
+    // }
+    //
+    // if (sensors.vertical2 != nullptr) {
+    //   printf("vertical2: %f\n", sensors.vertical2->getDistanceTraveled());
+    // }
+
     // Update drivetrain motors
     int left = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     int right = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
 
     // map to the right speed
-    left = utils::mapValue(0, -127, 127, -200, 200);
-    right = utils::mapValue(0, -127, 127, -200, 200);
+    left = utils::mapValue(left, -127, 127, -200, 200);
+    right = utils::mapValue(right, -127, 127, -200, 200);
 
     // set the motors
     drivetrain.leftMotors->move_velocity(left);
@@ -97,9 +121,19 @@ void opcontrol() {
      * DEROCK's CONTROLS
      */
     // toggle intake
-    if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
-      if (intake->get_target_velocity() == 0) {
+    if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R1)) {
+      if (intake->get_target_velocity() == -200 ||
+          intake->get_target_velocity() == 0) {
         intake->move_velocity(200);
+      } else {
+        intake->move_velocity(0);
+      }
+    }
+
+    if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_R2)) {
+      if (intake->get_target_velocity() == 200 ||
+          intake->get_target_velocity() == 0) {
+        intake->move_velocity(-200);
       } else {
         intake->move_velocity(0);
       }

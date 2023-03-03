@@ -5,13 +5,9 @@
 
 Task tasks::indexOne() {
   return Task([]() {
-    // set to HIGH
-    indexer->set_value(1);
-
+    indexer->set_value(0);
     // wait 0.5 second
     delay(500);
-
-    // set to LOW
-    indexer->set_value(0);
+    indexer->set_value(1);
   });
 }

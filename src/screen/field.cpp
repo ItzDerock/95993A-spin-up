@@ -1,4 +1,5 @@
 #include "../config/config.hpp"
+#include "../odom/odom.hpp"
 #include "display/lv_objx/lv_img.h"
 #include "screen.hpp"
 
@@ -45,7 +46,8 @@ int inchesToPixels(double inches) { return inches / REAL_WIDTH * IMAGE_WIDTH; }
 void display::fieldTask() {
   while (true) {
     // get the robot's position
-    auto state = chassis->getPose();
+    // auto state = chassis->getPose();
+    auto state = odom::getState();
 
     // turn the position into pixels
     int x = inchesToPixels(state.x);

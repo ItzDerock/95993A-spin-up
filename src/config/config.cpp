@@ -22,10 +22,10 @@ std::shared_ptr<Rotation> turret_rot =
 
 // flywheel
 std::shared_ptr<Motor> flywheel_left =
-    std::make_shared<Motor>(FLYWHEEL_LEFT, pros::E_MOTOR_GEARSET_18, false,
+    std::make_shared<Motor>(FLYWHEEL_LEFT, pros::E_MOTOR_GEARSET_18, true,
                             pros::E_MOTOR_ENCODER_DEGREES);
 std::shared_ptr<Motor> flywheel_right =
-    std::make_shared<Motor>(FLYWHEEL_RIGHT, pros::E_MOTOR_GEARSET_18, true,
+    std::make_shared<Motor>(FLYWHEEL_RIGHT, pros::E_MOTOR_GEARSET_18, false,
                             pros::E_MOTOR_ENCODER_DEGREES);
 MotorGroup flywheel({*flywheel_left, *flywheel_right});
 
@@ -48,7 +48,7 @@ IMU inertial(INERTIAL_PORT);
 
 // odometry
 ADIEncoder odom_middle({THREEWIRE_EXPANDER, ODOM_MIDDLE_1, ODOM_MIDDLE_2},
-                       true);
+                       false);
 ADIEncoder odom_left({THREEWIRE_EXPANDER, ODOM_LEFT_1, ODOM_LEFT_2}, false);
 ADIEncoder odom_right({THREEWIRE_EXPANDER, ODOM_RIGHT_1, ODOM_RIGHT_2}, true);
 
@@ -73,7 +73,7 @@ MotorGroup drive_right({*drive_top_right, *drive_bottom_right});
 lemlib::Drivetrain_t drivetrain{&drive_left, &drive_right, 14.75, 4, 476};
 
 // build the odometry setup
-lemlib::TrackingWheel left_tracking_wheel(&odom_left, 2.75, -3.5);
+lemlib::TrackingWheel left_tracking_wheel(&odom_left, 2.75, 3.5);
 lemlib::TrackingWheel right_tracking_wheel(&odom_right, 2.75, 3.5);
 lemlib::TrackingWheel middle_tracking_wheel(&odom_middle, 2.75, 3.5);
 lemlib::OdomSensors_t sensors{&left_tracking_wheel, &right_tracking_wheel,

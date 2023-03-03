@@ -8,8 +8,8 @@
  */
 #define DRIVE_TOP_LEFT 1
 #define DRIVE_TOP_RIGHT 2
-#define DRIVE_BOTTOM_LEFT 3
-#define DRIVE_BOTTOM_RIGHT 4
+#define DRIVE_BOTTOM_LEFT 4
+#define DRIVE_BOTTOM_RIGHT 3
 
 /**
  * Turret
@@ -20,8 +20,8 @@
 /**
  * Flywheel
  */
-#define FLYWHEEL_LEFT 6
-#define FLYWHEEL_RIGHT 7
+#define FLYWHEEL_LEFT 19
+#define FLYWHEEL_RIGHT 20
 
 /**
  * Intake
