@@ -49,7 +49,7 @@ void display::fieldTask() {
 
     // turn the position into pixels
     int x = inchesToPixels(state.x);
-    int y = inchesToPixels(state.y);
+    int y = -1 * inchesToPixels(state.y);
 
     // 0,0 is the center of the image
     // so we need to offset it

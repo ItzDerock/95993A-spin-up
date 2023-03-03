@@ -18,7 +18,7 @@ std::shared_ptr<pros::Motor> turret =
 
 // rotational sensor
 std::shared_ptr<Rotation> turret_rot =
-    std::make_shared<Rotation>(TURRET_ROT_SENSOR);
+    std::make_shared<Rotation>(TURRET_ROT_SENSOR, true);
 
 // flywheel
 std::shared_ptr<Motor> flywheel_left =
@@ -73,9 +73,9 @@ MotorGroup drive_right({*drive_top_right, *drive_bottom_right});
 lemlib::Drivetrain_t drivetrain{&drive_left, &drive_right, 14.75, 4, 476};
 
 // build the odometry setup
-lemlib::TrackingWheel left_tracking_wheel(&odom_left, 2.75, -7.5);
-lemlib::TrackingWheel right_tracking_wheel(&odom_right, 2.75, 7.5);
-lemlib::TrackingWheel middle_tracking_wheel(&odom_middle, 2.75, 3.6);
+lemlib::TrackingWheel left_tracking_wheel(&odom_left, 2.75, -3.5);
+lemlib::TrackingWheel right_tracking_wheel(&odom_right, 2.75, 3.5);
+lemlib::TrackingWheel middle_tracking_wheel(&odom_middle, 2.75, 3.5);
 lemlib::OdomSensors_t sensors{&left_tracking_wheel, &right_tracking_wheel,
                               &middle_tracking_wheel, nullptr, &inertial};
 

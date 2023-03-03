@@ -5,7 +5,7 @@
         "target": "v5",
         "templates": {
             "LemLib": {
-                "location": "/home/derock/.config/pros/templates/LemLib@0.4.3",
+                "location": "/home/derock/.config/pros/templates/LemLib@0.4.4",
                 "metadata": {
                     "origin": "local"
                 },
@@ -14,18 +14,18 @@
                 "supported_kernels": "^3.7.3",
                 "system_files": [
                     "firmware\\LemLib.a",
-                    "include\\lemlib\\chassis\\odom.hpp",
-                    "include\\lemlib\\api.hpp",
-                    "include\\lemlib\\chassis\\chassis.hpp",
                     "include\\lemlib\\pose.hpp",
+                    "include\\lemlib\\chassis\\trackingWheel.hpp",
+                    "include\\lemlib\\logger.hpp",
+                    "include\\lemlib\\chassis\\odom.hpp",
                     "include\\lemlib\\util.hpp",
                     "include\\lemlib\\pid.hpp",
-                    "include\\lemlib\\logger.hpp",
-                    "include\\lemlib\\chassis\\trackingWheel.hpp"
+                    "include\\lemlib\\api.hpp",
+                    "include\\lemlib\\chassis\\chassis.hpp"
                 ],
                 "target": "v5",
                 "user_files": [],
-                "version": "0.4.3"
+                "version": "0.4.4"
             },
             "kernel": {
                 "location": "/home/derock/.config/pros/templates/kernel@3.7.3",
