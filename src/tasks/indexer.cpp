@@ -3,11 +3,21 @@
 #include "pros/rtos.hpp"
 #include "tasks.hpp"
 
-Task tasks::indexOne() {
-  return Task([]() {
+Task *indexerTask = nullptr;
+
+Task *tasks::indexOne() {
+  if (indexerTask != nullptr) {
+    return indexerTask;
+  }
+
+  indexerTask = new Task([]() {
     indexer->set_value(0);
     // wait 0.5 second
     delay(500);
     indexer->set_value(1);
+    delay(200);
+    indexerTask = nullptr;
   });
+
+  return indexerTask;
 }

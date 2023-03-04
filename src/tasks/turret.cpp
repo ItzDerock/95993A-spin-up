@@ -16,13 +16,16 @@ bool tasks::autoAimEnabled = true;
 double tasks::turretTargetAngle = 0;
 
 // pid
-PIDController turretPID(0.8, 0, 0.5);
+PIDController turretPID(0.5, 0, 0.8);
 
 void tasks::aimTurret() {
   while (true) {
     // get the current location
     // auto state = chassis->getPose();
     auto state = odom::getState();
+
+    // fmod theta to fit in range
+    state.theta = fmod(state.theta, 360);
 
     // calculate angle to target
     tasks::turretTargetAngle = atan2(tasks::autoAimTarget.y - state.y,
@@ -31,15 +34,11 @@ void tasks::aimTurret() {
     // turn into degrees
     tasks::turretTargetAngle = lemlib::radToDeg(tasks::turretTargetAngle);
 
-    // calculate the error
-    // double error =
-    //     tasks::turretTargetAngle - ((double)turret_rot->get_angle() / 100);
-
-    // double error = 270 - state.theta - tasks::turretTargetAngle;
-
+    // relative target angle
     tasks::turretTargetAngle =
         (90 - tasks::turretTargetAngle) - state.theta + 180;
 
+    // calculate the error
     double error =
         tasks::turretTargetAngle - ((double)turret_rot->get_angle() / 100);
 

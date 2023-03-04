@@ -82,7 +82,7 @@ void odom::init() {
   }
 }
 
-void odom::reset() {
+void odom::reset(odom::XYTheta startState) {
   // stop task
   if (odomTask != nullptr) {
     odomTask->remove();
@@ -95,13 +95,18 @@ void odom::reset() {
   middle_tracking_wheel.reset();
 
   // reset state
-  state = {0, 0, 0};
+  state = startState;
 
   // reset prevSensors
   prevSensors = {0, 0, 0, 0};
 
   // restart task
   init();
+}
+
+void odom::reset() {
+  // default to 0, 0, 0
+  reset({0, 0, 0});
 }
 
 odom::XYTheta odom::getState(bool radians) {

@@ -22,7 +22,7 @@ double getFlywheelSpeed(double distance);
 void controllerInfo();
 
 // indexer.cpp - Indexer control task
-pros::Task indexOne();
+pros::Task *indexOne();
 
 // endgame.cpp - Endgame control task
 void fireEndgame();

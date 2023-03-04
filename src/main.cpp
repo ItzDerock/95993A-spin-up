@@ -35,6 +35,9 @@ void initialize() {
   // set indexer to low position
   indexer->set_value(1);
 
+  // set endgame to low position
+  // endgame->set_value(1);
+
   // Task printOdomTask(printOdom);
   // display initialization
   display::initializeField();
@@ -87,24 +90,6 @@ void autonomous() { chassis->moveTo(0, 10, 5000); }
  */
 void opcontrol() {
   while (true) {
-    // if (sensors.horizontal1 != nullptr) {
-    //   printf("horizontal1: %f\n",
-    //   sensors.horizontal1->getDistanceTraveled());
-    // }
-    //
-    // if (sensors.horizontal2 != nullptr) {
-    //   printf("horizontal2: %f\n",
-    //   sensors.horizontal2->getDistanceTraveled());
-    // }
-    //
-    // if (sensors.vertical1 != nullptr) {
-    //   printf("vertical: %f\n", sensors.vertical1->getDistanceTraveled());
-    // }
-    //
-    // if (sensors.vertical2 != nullptr) {
-    //   printf("vertical2: %f\n", sensors.vertical2->getDistanceTraveled());
-    // }
-
     // Update drivetrain motors
     int left = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
     int right = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y);
@@ -153,18 +138,13 @@ void opcontrol() {
       }
 
       // speed cap of 600
-      tasks::flywheelTargetSpeed = std::min(tasks::flywheelTargetSpeed, 600.0);
+      tasks::flywheelTargetSpeed = std::min(tasks::flywheelTargetSpeed, 200.0);
       // minimum of 0
       tasks::flywheelTargetSpeed = std::max(tasks::flywheelTargetSpeed, 0.0);
 
       // enable/disable
       if (partner.get_digital_new_press(E_CONTROLLER_DIGITAL_L1)) {
         tasks::flywheelEnabled = !tasks::flywheelEnabled;
-      }
-
-      // index
-      if (partner.get_digital_new_press(E_CONTROLLER_DIGITAL_L2)) {
-        tasks::indexOne();
       }
 
       // turn turret
@@ -175,6 +155,11 @@ void opcontrol() {
       } else {
         turret->move_velocity(0);
       }
+    }
+
+    // index
+    if (partner.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+      tasks::indexOne();
     }
 
     // toggle autoaim

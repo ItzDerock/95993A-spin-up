@@ -4,6 +4,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#include "../odom/odom.hpp"
+
 namespace utils {
 
 #ifndef M_PI
@@ -33,4 +35,7 @@ double constrain(double value, double min, double max);
 // degrees to face target
 double getAngleToTarget(double x1, double y1, double x2, double y2);
 
+// distance
+double getDistance(double x1, double y1, double x2, double y2);
+double getDistance(odom::XY point1, odom::XY point2);
 } // namespace utils
