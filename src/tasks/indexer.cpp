@@ -3,7 +3,7 @@
 #include "pros/rtos.hpp"
 #include "tasks.hpp"
 
-Task *indexerTask = nullptr;
+Task *tasks::indexerTask = nullptr;
 
 Task *tasks::indexOne() {
   if (indexerTask != nullptr) {

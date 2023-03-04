@@ -76,10 +76,6 @@ void odom::update() {
   state.x += globalOffset.x;
   state.y += globalOffset.y;
 
-  // state.x += localOffset.y * sin(thetam);
-  // state.y += localOffset.y * cos(thetam);
-  // state.x += localOffset.x * -cos(thetam);
-  // state.y += localOffset.x * sin(thetam);
   state.theta = newTheta;
 }
 

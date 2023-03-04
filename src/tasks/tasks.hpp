@@ -10,6 +10,7 @@ extern XYPoint autoAimTarget;
 
 // turret.cpp - Turret aiming task
 extern double turretTargetAngle;
+extern bool turretReady;
 void aimTurret();
 
 // flywheel.cpp - Flywheel control task
@@ -22,6 +23,7 @@ double getFlywheelSpeed(double distance);
 void controllerInfo();
 
 // indexer.cpp - Indexer control task
+extern pros::Task *indexerTask;
 pros::Task *indexOne();
 
 // endgame.cpp - Endgame control task

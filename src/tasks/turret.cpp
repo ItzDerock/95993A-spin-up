@@ -15,6 +15,7 @@ bool tasks::autoAimEnabled = true;
 
 // target
 double tasks::turretTargetAngle = 0;
+bool tasks::turretReady = false;
 
 // pid
 PIDController turretPID(0.5, 0, 0.8);
@@ -69,7 +70,14 @@ void tasks::aimTurret() {
       // wait
       delay(10);
       // continue
+      turretReady = false;
       continue;
+    }
+
+    if (abs(error) < 5) {
+      turretReady = true;
+    } else {
+      turretReady = false;
     }
 
     // calculate the output

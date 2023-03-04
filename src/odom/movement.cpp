@@ -85,14 +85,14 @@ void odom::moveTo(XY point, int timeout, float maxSpeed) {
     }
 
     // move the motors
-    drivetrain.leftMotors->move(leftPower);
-    drivetrain.rightMotors->move(rightPower);
+    drivetrain.leftMotors->move_velocity(leftPower);
+    drivetrain.rightMotors->move_velocity(rightPower);
 
     // delay
     pros::delay(10);
   }
 
   // stop the motors
-  drivetrain.leftMotors->move(0);
-  drivetrain.rightMotors->move(0);
+  drivetrain.leftMotors->move_velocity(0);
+  drivetrain.rightMotors->move_velocity(0);
 }

@@ -10,7 +10,11 @@ bool tasks::flywheelEnabled = false;
 // automatically set the flywheel speed
 // function that models the speed required given the distance
 double tasks::getFlywheelSpeed(double distance) {
-  return 0; // TODO: implement
+  if (distance < 57) {
+    return 110;
+  } else {
+    return 200;
+  }
 }
 
 // the task that will update the speed

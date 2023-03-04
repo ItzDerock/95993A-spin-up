@@ -2,8 +2,10 @@
 #include "./config/config.hpp"
 #include "./tasks/tasks.hpp"
 #include "./utils/utils.hpp"
+#include "autonomous/auton.hpp"
 #include "odom/odom.hpp"
 #include "pros/misc.h"
+#include "pros/motors.h"
 #include "screen/screen.hpp"
 
 // void printOdom() {
@@ -76,7 +78,9 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() { chassis->moveTo(0, 10, 5000); }
+void autonomous() { auton::run(); }
+
+bool brakesOn = false;
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -125,6 +129,17 @@ void opcontrol() {
       } else {
         intake->move_velocity(0);
       }
+    }
+
+    // brake mode
+    if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_B)) {
+      brakesOn = !brakesOn;
+
+      auto state =
+          brakesOn ? pros::E_MOTOR_BRAKE_COAST : pros::E_MOTOR_BRAKE_HOLD;
+
+      drivetrain.leftMotors->set_brake_modes(state);
+      drivetrain.rightMotors->set_brake_modes(state);
     }
 
     /*
