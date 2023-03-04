@@ -18,12 +18,12 @@ void auton::resetPosition() {
 
   switch (autonMode) {
   case auton::FAR_ROLLER:
-    startState = {18, -64, lemlib::degToRad(180)};
+    startState = {-14, 58, lemlib::degToRad(180)};
     break;
 
   case auton::CLOSE_ROLLER:
   case auton::SKILLS:
-    startState = {-63, 41, lemlib::degToRad(270)};
+    startState = {56, -37, lemlib::degToRad(90)};
     break;
 
   case auton::NONE:

@@ -7,7 +7,8 @@
 #include "tasks.hpp"
 
 // constants
-XYPoint tasks::autoAimTarget = {53, 53};
+// XYPoint tasks::autoAimTarget = {53, 53};
+XYPoint tasks::autoAimTarget = {-48, -52};
 
 // configuration
 bool tasks::autoAimEnabled = true;
@@ -37,6 +38,9 @@ void tasks::aimTurret() {
     // relative target angle
     tasks::turretTargetAngle =
         (90 - tasks::turretTargetAngle) - state.theta + 180;
+
+    // fmod
+    tasks::turretTargetAngle = fmod(tasks::turretTargetAngle, 360);
 
     // calculate the error
     double error =
