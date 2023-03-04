@@ -42,9 +42,9 @@ void tasks::aimTurret() {
     double error =
         tasks::turretTargetAngle - ((double)turret_rot->get_angle() / 100);
 
-    printf("turret angle: %d\n", turret_rot->get_angle());
-    printf("turret target angle: %f\n", tasks::turretTargetAngle);
-    printf("error: %f\n", error);
+    // printf("turretangle: %d\n", turret_rot->get_angle());
+    // printf("turret target angle: %f\n", tasks::turretTargetAngle);
+    // printf("error: %f\n", error);
 
     // error -= state.theta;
 
@@ -56,7 +56,7 @@ void tasks::aimTurret() {
     }
 
     // print the error
-    printf("errorCalc: %f\n", error);
+    // printf("errorCalc: %f\n", error);
 
     // if error > 45 deg or < 45 deg, out of range for turret
     if (error > 40 || error < -40) {
@@ -72,7 +72,7 @@ void tasks::aimTurret() {
     double output = turretPID.update(error);
 
     // print
-    printf("output: %f\n", output);
+    // printf("output: %f\n", output);
 
     // set the output
     turret->move_velocity(output);

@@ -42,6 +42,9 @@ void initialize() {
   // display initialization
   display::initializeField();
   display::initializeInformation();
+
+  // controller screen task
+  Task controllerScreenTask(tasks::controllerInfo);
 }
 
 /**

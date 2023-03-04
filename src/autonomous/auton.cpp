@@ -4,7 +4,7 @@
 #include "lemlib/util.hpp"
 
 // number of times to rotate a roller to change color
-const int INTAKE_MOVE_ROTS = 30;
+const double INTAKE_MOVE_ROTS = 5.5;
 
 // selected auton
 auton::AutonMode auton::autonMode = auton::NONE;

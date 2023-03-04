@@ -12,12 +12,7 @@ struct {
 odom::XYTheta state = {0, 0, 0};
 
 void odom::update() {
-  // // skip runs when all sensors are not initialized
-  // if (sensors.horizontal1 == nullptr || sensors.horizontal2 == nullptr ||
-  //     sensors.vertical1 == nullptr) {
-  //   // printf("Skipping odom update because sensors are not initialized");
-  //   return;
-  // }
+  // skip runs when all sensors are not initialized
 
   // 1. Store the current encoder values
   auto left = left_tracking_wheel.getDistanceTraveled();
@@ -36,11 +31,13 @@ void odom::update() {
 
   // 4. (skipped)
   // 5. Calculate new orientation
-  auto newTheta = (dL - dR) / (left_tracking_wheel.getOffset() +
-                               right_tracking_wheel.getOffset());
+  auto newTheta = (left - right) / (left_tracking_wheel.getOffset() +
+                                    right_tracking_wheel.getOffset());
+
+  printf("newTheta: %f\n", newTheta);
 
   // 6. Calculate change in orientation
-  auto dTheta = newTheta - prevSensors.theta;
+  auto dTheta = newTheta - state.theta;
 
   // 7. Calculate local offset for dTheta = 0
   odom::XY localOffset = {0, 0};
@@ -50,25 +47,40 @@ void odom::update() {
     localOffset.y = dR;
   } else {
     // 8. Otherwise, calculate local offset with formula.
-    localOffset.x = 2 * sin(newTheta / 2) *
+    localOffset.x = 2 * sin(dTheta / 2) *
                     (dC / dTheta + (middle_tracking_wheel.getOffset()));
-    localOffset.y = 2 * sin(newTheta / 2) *
+    localOffset.y = 2 * sin(dTheta / 2) *
                     (dR / dTheta + (right_tracking_wheel.getOffset()));
   }
 
   // 9. Calculate the average orientation
-  auto thetam = prevSensors.theta + dTheta / 2;
+  auto thetam = state.theta + dTheta / 2;
 
   // 10. Calculate the global offset
+  // 10. Calculate global offset
   odom::XY globalOffset = {0, 0};
 
-  globalOffset.x = localOffset.x * cos(thetam) - localOffset.y * sin(thetam);
-  globalOffset.y = localOffset.x * sin(thetam) + localOffset.y * cos(thetam);
+  // convert local offset to polar coordinates
+  double r =
+      sqrt(localOffset.x * localOffset.x + localOffset.y * localOffset.y);
+  double theta = atan2(localOffset.y, localOffset.x);
+
+  // subtract thetam from the angle component
+  theta -= thetam;
+
+  // convert back to Cartesian coordinates
+  globalOffset.x = r * cos(theta);
+  globalOffset.y = r * sin(theta);
 
   // 11. Update the global position
   state.x += globalOffset.x;
   state.y += globalOffset.y;
-  state.theta += dTheta;
+
+  // state.x += localOffset.y * sin(thetam);
+  // state.y += localOffset.y * cos(thetam);
+  // state.x += localOffset.x * -cos(thetam);
+  // state.y += localOffset.x * sin(thetam);
+  state.theta = newTheta;
 }
 
 void odom::init() {
