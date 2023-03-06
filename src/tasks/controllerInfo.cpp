@@ -25,9 +25,8 @@ void tasks::controllerInfo() {
     std::string autoaim = tasks::autoAimEnabled ? "ON" : "OFF";
 
     // build a big string
-    std::string info = std::to_string((int)rpm) + "rpm | " +
-                       std::to_string((int)targetRPM) + " | " +
-                       "AA: " + autoaim;
+    std::string info =
+        std::to_string((int)targetRPM) + " | " + "AA: " + autoaim;
 
     // set the screen
     partner.set_text(0, 0, info.c_str());

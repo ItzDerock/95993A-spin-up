@@ -12,9 +12,9 @@ void tasks::fireEndgame() {
   endgameTask = new Task([]() {
     // fire the endgame
     endgame->set_value(1);
-    delay(500);
-    endgame->set_value(0);
-    delay(100);
+    // delay(500);
+    // endgame->set_value(0);
+    // delay(100);
     endgameTask = nullptr;
   });
 }

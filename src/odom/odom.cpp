@@ -9,6 +9,10 @@ struct {
   double left, right, center, theta;
 } prevSensors = {0, 0, 0, 0};
 
+struct {
+  double left, right, theta;
+} resetValues = {0, 0, 0};
+
 odom::XYTheta state = {0, 0, 0};
 
 void odom::update() {
@@ -29,10 +33,14 @@ void odom::update() {
   prevSensors.right = right;
   prevSensors.center = center;
 
-  // 4. (skipped)
+  // 4. total change since last reset
+  // auto deltaLr = left - resetValues.left;
+  // auto deltaRr = right - resetValues.right;
+
   // 5. Calculate new orientation
-  auto newTheta = (left - right) / (left_tracking_wheel.getOffset() +
-                                    right_tracking_wheel.getOffset());
+  auto newTheta =
+      resetValues.theta + (left - right) / (left_tracking_wheel.getOffset() +
+                                            right_tracking_wheel.getOffset());
 
   printf("newTheta: %f\n", newTheta);
 
@@ -103,7 +111,11 @@ void odom::reset(odom::XYTheta startState) {
   middle_tracking_wheel.reset();
 
   // reset state
-  state = startState;
+  // state = startState;
+  state.x = startState.x;
+  state.y = startState.y;
+  state.theta = startState.theta;
+  resetValues.theta = startState.theta;
 
   // reset prevSensors
   prevSensors = {0, 0, 0, 0};

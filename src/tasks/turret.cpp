@@ -18,7 +18,7 @@ double tasks::turretTargetAngle = 0;
 bool tasks::turretReady = false;
 
 // pid
-PIDController turretPID(0.5, 0, 0.8);
+PIDController turretPID(0.8, 0, 0.85);
 
 void tasks::aimTurret() {
   while (true) {
@@ -64,7 +64,8 @@ void tasks::aimTurret() {
     // printf("errorCalc: %f\n", error);
 
     // if error > 45 deg or < 45 deg, out of range for turret
-    if (error > 40 || error < -40) {
+    if (tasks::turretTargetAngle > 45 &&
+        tasks::turretTargetAngle < (360 - 45)) {
       // set the output to 0
       turret->move_velocity(0);
       // wait
